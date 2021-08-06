@@ -9,17 +9,30 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public float moveSpeed = 10;
+    public float moveSpeed = 5;
+    public float jumpSpeed = 5;
     public CharacterController player;
-    
+    private Vector3 move;
+    public float g = 10;
     
     private void Update()
     {
-        var x = Input.GetAxis("Horizontal");
-        var z = Input.GetAxis("Vertical");
+        float x = 0, z = 0;
+        if (player.isGrounded)
+        {
+            x = Input.GetAxis("Horizontal");
+            z = Input.GetAxis("Vertical");
+            var trans = transform;
+            move = trans.right * x + trans.forward * z;
+            move *= moveSpeed;
+            if (Input.GetAxis("Jump") == 1)
+            {
+                move.y = jumpSpeed;
+            }
+        }
+
+        move.y = move.y - g * Time.deltaTime;
         
-        var trans = transform;
-        var move = trans.right * x + trans.forward * z;
-        player.Move(moveSpeed * Time.deltaTime * move);
+        player.Move( Time.deltaTime * move);
     }
 }
